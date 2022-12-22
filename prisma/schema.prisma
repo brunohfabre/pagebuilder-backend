@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Layout {
+  id       String    @id @map("_id")
+  label    String
+  routes   Route[]
+  renderer Renderer?
+}
+
+model Route {
+  id            String   @id @map("_id")
+  label         String
+  route         String
+  loadDataRoute String?
+  createdAt     DateTime @default(now())
+  layoutId      String
+  layout        Layout   @relation(fields: [layoutId], references: [id], onDelete: Cascade)
+  rendererId    String
+  renderer      Renderer @relation(fields: [rendererId], references: [id])
+
+  @@index([route])
+}
+
+model Renderer {
+  id       String  @id @map("_id")
+  default  String
+  items    Json
+  layoutId String? @unique
+  layout   Layout? @relation(fields: [layoutId], references: [id], onDelete: Cascade)
+  routes   Route[]
+}
