@@ -39,3 +39,9 @@ model Renderer {
   layout   Layout? @relation(fields: [layoutId], references: [id], onDelete: Cascade)
   routes   Route[]
 }
+
+model Entity {
+  id     String @id @map("_id")
+  name   String @unique
+  fields Json[]
+}
